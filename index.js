@@ -3,8 +3,10 @@
 /* jshint node: true, asi: true, laxcomma: true, esversion: 6 */
 'use strict'
 
+require('shelljs/global')
 require('colors')
 
+const path = require('path')
 const ora = require('ora')
 const download = require('download')
 
@@ -21,10 +23,20 @@ const boilerplates = {
         let spinner = ora('fetching...')
 
         spinner.start()
+        mkdir('.tmp')
 
-        download(url, process.cwd(), { extract: true })
+        // mkdir .tmp
+        // download and extract into .tmp
+        // cp -r .tmp/fog-static-master/* ./
+        download(url, path.resolve(process.cwd(), '.tmp'), { extract: true })
             .then(() => {
+                spinner.text = 'setting things up...'
+                mv('.tmp/fog-static-master/*', './')
+                rm('-r', '.tmp')
                 spinner.stop()
+                console.info('\nOk, fix up the package.json file with your project name and run'.cyan)
+                console.info('\n\t yarn|npm install')
+                console.info('\n and you\'ll be good to go')
                 console.info('\ndone!'.green)
             })
             .catch(err => {
