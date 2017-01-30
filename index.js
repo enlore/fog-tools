@@ -7,7 +7,6 @@ require('colors')
 
 const ora = require('ora')
 const download = require('download')
-const unzip = require('extract-zip')
 
 const pkg = require('./package.json')
 const version = pkg.version
@@ -23,22 +22,15 @@ const boilerplates = {
 
         spinner.start()
 
-        download(url)
-            .then(zip => {
-                //spinner.stop()
-                spinner.text = 'extracting...'
-
-                unzip(zip, (err) => {
-                    if (err) throw err
-                    else {
-                        spinner.stop()
-                        console.info('done extracting')
-                    }
-                })
+        download(url, process.cwd(), { decompress: true })
+            .then(() => {
+                spinner.stop()
+                console.info('\ndone!'.green)
             })
             .catch(err => {
-                console.error(err)
                 spinner.stop()
+                console.error('\nsomething broke!'.red)
+                console.error(err)
             })
     }
 }
