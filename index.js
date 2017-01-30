@@ -34,7 +34,7 @@ const boilerplates = {
 
 fog.version(version.slice(1))
     .command('init <project-type> [dir]')
-    .description('create boilerplate project structure of given [project-type] into optional <dir>, otherwise deploys into current working dir')
+    .description('download boilerplate of given <project-type> into optional [dir], otherwise deploys into current working dir')
     .action((type, dir, opts) => {
         info('oh hey'.cyan)
 
@@ -52,7 +52,6 @@ fog.version(version.slice(1))
             boilerplates[type](dir)
         }
     })
-
 
 fog.parse(process.argv)
 
