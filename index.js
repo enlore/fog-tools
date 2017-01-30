@@ -22,7 +22,7 @@ const boilerplates = {
 
         spinner.start()
 
-        download(url, process.cwd(), { decompress: true })
+        download(url, process.cwd(), { extract: true })
             .then(() => {
                 spinner.stop()
                 console.info('\ndone!'.green)
