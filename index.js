@@ -14,59 +14,79 @@ const pkg = require('./package.json')
 const version = pkg.version
 
 const fog = require('commander')
-const info = console.info.bind(console, '~~~ fog > ')
+const info = console.info.bind(console, '~~~ fog >'.grey)
 
 const boilerplates = {
-    static () {
+    static (dir) {
         let repo = 'https://github.com/enlore/fog-static'
         let url = 'https://github.com/enlore/fog-static/archive/master.zip'
 
-        let spinner = ora('fetching...')
+        console.log()
+        info('you want to fire up a static site, ok, no prob'.cyan)
+        console.log()
 
-        spinner.start()
-        mkdir('.tmp')
-
-        // mkdir .tmp
-        // download and extract into .tmp
-        // cp -r .tmp/fog-static-master/* ./
-        download(url, path.resolve(process.cwd(), '.tmp'), { extract: true })
+        get(url, dir)
             .then(() => {
-                spinner.text = 'setting things up...'
-
-                mv('.tmp/fog-static-master/*', './')
-                rm('-r', '.tmp')
-
-                spinner.stop()
-
-                info('Ok, fix up the package.json file with your project name and run'.cyan)
-
-                console.log('\n  yarn install'.blue)
-                info('or')
-                console.log('\n  npm install'.blue)
-
-                info('and you\'ll be good to go'.cyan)
-                info('that said, we\'re done!'.green)
-            })
-            .catch(err => {
-                spinner.stop()
-                console.error('\nsomething broke!'.red)
-                console.error(err)
+                info('ok, you\'re good to go. code a website now, pls'.green)
             })
     }
 }
 
 fog.version(version.slice(1))
-    .command('init [project-type]')
-    .description('create boilerplate project structure of given [project-type]')
-    .action((type, opts) => {
+    .command('init <project-type> [dir]')
+    .description('create boilerplate project structure of given [project-type] into optional <dir>, otherwise deploys into current working dir')
+    .action((type, dir, opts) => {
+        info('oh hey'.cyan)
 
         if (! boilerplates[type]) {
             console.error(`\nI don't know about a boilerplate of type '${type}'`.red)
             console.info(`\nI know about these boilerplates:\n  - ${Object.keys(boilerplates).join("\n  - ")}`.cyan)
         } else {
-            boilerplates[type]()
+            if (dir === void 0)
+                dir = process.cwd()
+            else if (typeof dir === 'object') {
+                opts = dir
+                dir = process.cwd()
+            }
+
+            boilerplates[type](dir)
         }
     })
 
 
 fog.parse(process.argv)
+
+function get (url, dir) {
+    let spinner = ora('fetching...')
+    spinner.start()
+
+    let tmpDir = path.resolve(dir, '.tmp')
+    mkdir('-p', tmpDir)
+
+    return download(url, tmpDir, { extract: true })
+        .then(() => {
+            spinner.stop()
+
+            info('archive fetched and extracted'.cyan)
+
+            let archiveDirName = ls(tmpDir).pop()
+            let archivePath = path.resolve(tmpDir, archiveDirName)
+
+            mv(`${archivePath}/*`, dir)
+            rm('-r', tmpDir)
+
+            info('project dir setup complete\n'.cyan)
+
+            info('ok, fix up the package.json file with your project name or whatever'.cyan)
+
+            info('then run'.cyan, 'yarn install'.blue, 'or'.cyan, 'npm install'.blue)
+            info('finally run'.cyan, 'yarn run dev'.blue, 'or'.cyan, 'npm run dev\n'.blue)
+
+            info('recommended next steps:'.cyan, 'use the firebase-cli tools to deploy\n'.blue)
+        })
+        .catch(err => {
+            spinner.stop()
+            console.error('\nsomething broke!'.red)
+            console.error(err)
+        })
+}
