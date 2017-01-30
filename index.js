@@ -32,7 +32,7 @@ const boilerplates = {
     }
 }
 
-fog.version(version.slice(1))
+fog.version(version)
     .command('init <project-type> [dir]')
     .description('download boilerplate of given <project-type> into optional [dir], otherwise deploys into current working dir')
     .action((type, dir, opts) => {
