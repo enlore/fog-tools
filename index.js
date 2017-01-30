@@ -40,7 +40,8 @@ fog.version(version)
 
         if (! boilerplates[type]) {
             console.error(`\nI don't know about a boilerplate of type '${type}'`.red)
-            console.info(`\nI know about these boilerplates:\n  - ${Object.keys(boilerplates).join("\n  - ")}`.cyan)
+            info(`\nI know about these boilerplates:\n  - ${Object.keys(boilerplates).join("\n  - ")}`.cyan)
+
         } else {
             if (dir === void 0)
                 dir = process.cwd()
