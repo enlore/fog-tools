@@ -14,6 +14,7 @@ const pkg = require('./package.json')
 const version = pkg.version
 
 const fog = require('commander')
+const info = console.info.bind(console, '~~~ fog > ')
 
 const boilerplates = {
     static () {
@@ -31,13 +32,20 @@ const boilerplates = {
         download(url, path.resolve(process.cwd(), '.tmp'), { extract: true })
             .then(() => {
                 spinner.text = 'setting things up...'
+
                 mv('.tmp/fog-static-master/*', './')
                 rm('-r', '.tmp')
+
                 spinner.stop()
-                console.info('\nOk, fix up the package.json file with your project name and run'.cyan)
-                console.info('\n\t yarn|npm install')
-                console.info('\n and you\'ll be good to go')
-                console.info('\ndone!'.green)
+
+                info('Ok, fix up the package.json file with your project name and run'.cyan)
+
+                console.log('\n  yarn install'.blue)
+                info('or')
+                console.log('\n  npm install'.blue)
+
+                info('and you\'ll be good to go'.cyan)
+                info('that said, we\'re done!'.green)
             })
             .catch(err => {
                 spinner.stop()
