@@ -16,6 +16,13 @@ const version = pkg.version
 const fog = require('commander')
 const info = console.info.bind(console, '~~~ fog >'.grey)
 
+const common = {
+    normalize: 'https://necolas.github.io/normalize.css/latest/normalize.css',
+    skeleton: {
+        grid: 'https://raw.githubusercontent.com/skeleton-framework/skeleton-framework/combo-bones/bones/grid.css'
+    }
+}
+
 const boilerplates = {
     static (dir) {
         let repo = 'https://github.com/enlore/fog-static'
@@ -75,14 +82,28 @@ function get (url, dir) {
             mv(`${archivePath}/*`, dir)
             rm('-r', tmpDir)
 
-            info('project dir setup complete\n'.cyan)
+            info('fetching common libs')
 
-            info('ok, fix up the package.json file with your project name or whatever'.cyan)
+            spinner.text = 'fetching normalize'
+            spinner.start()
 
-            info('then run'.cyan, 'yarn install'.blue, 'or'.cyan, 'npm install'.blue)
-            info('finally run'.cyan, 'yarn run dev'.blue, 'or'.cyan, 'npm run dev\n'.blue)
+            download(common.normalize, path.join(dir, 'public', 'css'))
+            .then(() => {
+                spinner.text = 'fetching skeleton grid'
+                return download(common.skeleton.grid, path.join(dir, 'public', 'css'))
+            })
+            .then(() => {
+                spinner.stop()
 
-            info('recommended next steps:'.cyan, 'use the firebase-cli tools to deploy\n'.blue)
+                info('project dir setup complete\n'.cyan)
+
+                info('ok, fix up the package.json file with your project name or whatever'.cyan)
+
+                info('then run'.cyan, 'yarn install'.blue, 'or'.cyan, 'npm install'.blue)
+                info('finally run'.cyan, 'yarn run dev'.blue, 'or'.cyan, 'npm run dev\n'.blue)
+
+                info('recommended next steps:'.cyan, 'use the firebase-cli tools to deploy\n'.blue)
+            })
         })
         .catch(err => {
             spinner.stop()
