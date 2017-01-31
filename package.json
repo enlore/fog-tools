@@ -5,6 +5,10 @@
   "repository": {},
   "license": "MIT",
   "preferGlobal": true,
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/enlore/fog-tools.git"
+  },
   "bin": {
     "fog": "index.js"
   },
