@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 /* jshint node: true, asi: true, laxcomma: true, esversion: 6 */
+/* globals ls:true, mv:true, mkdir:true, rm:true */
 'use strict'
 
 require('shelljs/global')
@@ -8,6 +9,7 @@ require('colors')
 
 const path = require('path')
 const ora = require('ora')
+const inquirer = require('inquirer')
 const download = require('download')
 
 const pkg = require('./package.json')
@@ -20,6 +22,10 @@ const common = {
     normalize: 'https://necolas.github.io/normalize.css/latest/normalize.css',
     skeleton: {
         grid: 'https://raw.githubusercontent.com/skeleton-framework/skeleton-framework/combo-bones/bones/grid.css'
+    },
+    milligram: {
+        all: '',
+        grid: ''
     }
 }
 
@@ -35,6 +41,19 @@ const boilerplates = {
         get(url, dir)
             .then(() => {
                 info('ok, you\'re good to go. code a website now, pls'.green)
+            })
+    },
+
+    'vue-rollup' (dir) {
+        let repo = 'https://github.com/enlore/fog-vue-rollup'
+        let url = `${repo}/archive/master.zip`
+
+        info('\nok, let\'s do a straightforward rig with rollup, pug, and scss/sass\n')
+
+        get(url, dir)
+            .then(_ => {
+                info('ok, project is ready for you to fetch and build')
+                info('thank you for using the fog cli'.cyan)
             })
     }
 }
@@ -82,7 +101,29 @@ function get (url, dir) {
             mv(`${archivePath}/*`, dir)
             rm('-r', tmpDir)
 
-            info('fetching common libs')
+            //info('pick common libs')
+
+            inquirer.prompt([
+                {
+                    type: 'checkbox',
+                    message: 'Pick some useful libs',
+                    name: 'libs',
+                    choices: [
+                        new inquirer.Separator('## Utility libs'),
+                        { name: 'normalize css', value: 'normalize', checked: true },
+
+                        new inquirer.Separator('## CSS layout/framework libs'),
+                        { name: 'skeleton css (grid only)', value: 'skeleton.grid' },
+                        { name: 'milligram css', value: 'millgram.all' },
+
+                        new inquirer.Separator('## JS/behavior libs'),
+                        { name: 'vue.js', value: 'vue' },
+                        { name: 'jquery', value: 'jquery' }
+                    ]
+                }
+            ]).then(answers => {
+                console.log(answers)
+            })
 
             spinner.text = 'fetching normalize'
             spinner.start()
