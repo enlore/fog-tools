@@ -55,6 +55,19 @@ const boilerplates = {
                 info('ok, project is ready for you to fetch and build')
                 info('thank you for using the fog cli'.cyan)
             })
+    },
+
+    'electron-vue-rollup' (dir) {
+        let repo = 'https://github.com/enlore/fog-tools-electron-vue-rollup'
+        let url = `${repo}/archive/master.zip`
+
+        info('\ndoing an electron boilerplate with vue, rollup, pug, scss/sass\n')
+
+        get(url, dir)
+            .then(_ => {
+                info('ok, project is ready for you to fetch and build')
+                info('thank you for using the fog cli ;D'.cyan)
+            })
     }
 }
 
