@@ -1,7 +1,11 @@
 {
   "name": "fog-tools",
   "version": "1.6.0",
-  "main": "fog.js",
+  "bin": {
+      "fog": "fog.js",
+      "fog-init": "fog-init.js",
+      "fog-list": "fog-list.js"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/enlore/fog-tools.git"
