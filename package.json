@@ -1,10 +1,8 @@
 {
   "name": "fog-tools",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "bin": {
-      "fog": "fog.js",
-      "fog-init": "fog-init.js",
-      "fog-list": "fog-list.js"
+    "fog": "index.js"
   },
   "repository": {
     "type": "git",
@@ -12,9 +10,6 @@
   },
   "license": "MIT",
   "preferGlobal": true,
-  "bin": {
-    "fog": "index.js"
-  },
   "dependencies": {
     "colors": "^1.1.2",
     "commander": "^2.9.0",
