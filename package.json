@@ -2,7 +2,9 @@
   "name": "fog-tools",
   "version": "1.6.1",
   "bin": {
-    "fog": "index.js"
+    "fog": "fog.js",
+    "fog-list": "fog-list.js",
+    "fog-init": "fog-init.js"
   },
   "repository": {
     "type": "git",
