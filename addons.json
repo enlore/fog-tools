@@ -1,0 +1,11 @@
+{
+    "normalize": {
+        "repo": "https://necolas.github.io/normalize.css/latest/normalize.css"
+    },
+    "skeleton.grid": {
+        "repo": "https://raw.githubusercontent.com/skeleton-framework/skeleton-framework/combo-bones/bones/grid.css"
+    },
+    "bulma": {
+        "repo": "bulma"
+    }
+}

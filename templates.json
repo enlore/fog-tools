@@ -1,0 +1,21 @@
+{
+    "static-firebase": {
+        "repo": "https://github.com/enlore/fog-static",
+        "description": "Static website hosted on Firebase, built with Pug and Sass"
+    },
+
+    "static-s3": {
+        "repo": "not implemented",
+        "description": "Static website hosted on Amazon S3, configured with Terraform"
+    },
+
+    "rollup-vue-app": {
+        "repo": "https://github.com/enlore/fog-vue-rollup",
+        "description": "Single page app powered by Vue, built by Rollup"
+    },
+
+    "electron-vue-app": {
+        "repo": "https://github.com/enlore/fog-tools-electron-vue-rollup",
+        "description": "Desktop app powered by Electron, built with Vue by Rollup"
+    }
+}
