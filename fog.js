@@ -13,6 +13,7 @@ const inquirer = require('inquirer')
 const download = require('download')
 
 const pkg = require('./package.json')
+
 const version = pkg.version
 
 const fog = require('commander')
@@ -72,26 +73,7 @@ const boilerplates = {
 }
 
 fog.version(version)
-    .command('init <project-type> [dir]')
-    .description('download boilerplate of given <project-type> into optional [dir], otherwise deploys into current working dir')
-    .action((type, dir, opts) => {
-        info('oh hey'.cyan)
-
-        if (! boilerplates[type]) {
-            console.error(`\nI don't know about a boilerplate of type '${type}'`.red)
-            info(`\nI know about these boilerplates:\n  - ${Object.keys(boilerplates).join("\n  - ")}`.cyan)
-
-        } else {
-            if (dir === void 0)
-                dir = process.cwd()
-            else if (typeof dir === 'object') {
-                opts = dir
-                dir = process.cwd()
-            }
-
-            boilerplates[type](dir)
-        }
-    })
+    .command('init <template> [dir]', 'download boilerplate of given <template> into optional [dir], otherwise deploys into current working dir')
 
 fog.parse(process.argv)
 
