@@ -8,6 +8,15 @@ Use this to crap out a boilerplate project structure.
 
     fog --help
 
+    fog list
+    fog list templates
+    fog list addons
+
+    fog search <template tag>
+    fog search <addon name>
+
+    fog init <template> [destDir]
+
     # type is the name of the boilerplate template
     # (currently only supports 'static')
     # optional dir will be created
