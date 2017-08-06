@@ -74,6 +74,7 @@ const boilerplates = {
 
 fog.version(version)
     .command('init <template> [dir]', 'download boilerplate of given <template> into optional [dir], otherwise deploys into current working dir')
+    .command('list', 'List known templates')
 
 fog.parse(process.argv)
 

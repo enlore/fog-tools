@@ -83,6 +83,13 @@ fetch(template.repo)
 
         spin.stop()
     })
+    .catch(err => {
+        if (spin !== undefined) spin.stop()
+        warn('something has gone terribly wrong')
+        console.error(err)
+        warn('and so i die')
+        exit(1)
+    })
 
 function pick (name) {
     let t = templates[name]
