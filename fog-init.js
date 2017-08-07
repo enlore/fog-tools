@@ -62,8 +62,6 @@ fetch(template.repo)
 
         spin.stop()
 
-        spin.stop()
-
         return true
     })
 
@@ -85,9 +83,11 @@ fetch(template.repo)
     })
     .catch(err => {
         if (spin !== undefined) spin.stop()
+
         warn('something has gone terribly wrong')
         console.error(err)
         warn('and so i die')
+
         exit(1)
     })
 
@@ -96,8 +96,7 @@ function pick (name) {
     if (!t) {
         info(`No template by that name: ${name}`)
         exit(1)
-    }
-    else
+    } else
         return t
 }
 
