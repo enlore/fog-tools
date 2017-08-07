@@ -1,12 +1,25 @@
 {
     "static-firebase": {
         "repo": "https://github.com/enlore/fog-static",
-        "description": "Static website hosted on Firebase, built with Pug and Sass"
+        "description": "Static website hosted on Firebase, built with Pug and Sass",
+        "instructions": [
+            "set up Google Firebase project with hosting",
+            "install firebase command line tool",
+            "<npm|yarn> run dev",
+            "code site",
+            "firebase deploy"
+        ]
     },
 
     "static-s3": {
-        "repo": "not implemented",
-        "description": "Static website hosted on Amazon S3, configured with Terraform"
+        "repo": "https://github.com/enlore/terraform-demo",
+        "description": "Static website hosted on Amazon S3, configured with Terraform",
+        "instructions": [
+            "install terraform (https://www.terraform.io/downloads.html)",
+            "set up AWS account",
+            "terraform plan",
+            "terraform apply"
+        ]
     },
 
     "rollup-vue-app": {
