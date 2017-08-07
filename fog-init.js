@@ -3,13 +3,14 @@
 require('shelljs/global')
 require('colors')
 
+const info = require("./util.js").info
+const warn = require("./util.js").warn
+const lnfd = require("./util.js").lnfd
+
 const path = require('path')
 const download = require('download')
 const inq = require('inquirer')
 const ora = require('ora')
-
-const info = console.info.bind(console, '~~~ fog >'.grey)
-const warn = console.warn.bind(console, '~~~ fog x'.red)
 
 const templates = require('./templates.json')
 
@@ -18,55 +19,66 @@ fog.parse(process.argv)
 
 let tmpDir = path.resolve('/tmp/.fog-cli-workspace')
 
-let outputDir = path.resolve(fog.args[1] || '.')
-let outputDirContents = ls('-lA', outputDir)
+let outputDir = fog.args[1]
+let outputPath = path.resolve(outputDir || '.')
 
-if (outputDir === path.resolve(__dirname)) {
+let outputPathContents = ls('-lA', outputPath)
+
+lnfd()
+info('hey hows it going')
+lnfd()
+
+if (outputPath === path.resolve(__dirname)) {
     info('using current working directory')
 
-    if (outputDirContents.length > 0) {
+    if (outputPathContents.length > 0) {
         warn('current working directory not empty. blarg.')
         exit(1)
     }
 } else {
-    info(`attempting to output project into ${outputDir}`)
+    info(`attempting to output project into ${outputPath}`)
 
-    if (outputDirContents.length > 0) {
+    if (outputPathContents.length > 0) {
         warn('output dir not empty. blarg.')
         exit(1)
     }
 }
 
+lnfd()
 info('tmpDir:', tmpDir)
-info('outputDir: ', outputDir)
-info('options', fog.opts())
+info('outputPath: ', outputPath)
+info('options:', fog.opts())
+lnfd()
 
 // pick from list
 let template = pick(fog.args[0])
 
 let spin
 
- // set up addons
 spin = ora('fetching template')
 spin.start()
 
 fetch(template.repo)
     .then(() => {
-        info(`fetched down ${fog.args[0]}`)
-        info(`mv-ing files into ${outputDir}`)
+        spin.stop()
+
+        info('fetched down ' + `${fog.args[0]}`.blue)
+        info(`moving files into ${outputPath}`)
 
         spin.text = 'zug zug'
         spin.start()
 
-        mv(`${tmpDir}/*/*`, outputDir)
+        mv(`${tmpDir}/*/*`, outputPath)
 
         spin.stop()
+        lnfd()
 
         return true
     })
 
     .then(askAddons)
     .then(addons => {
+        lnfd()
         info('selected these addons', addons)
         return
     })
@@ -80,6 +92,14 @@ fetch(template.repo)
         clean(tmpDir)
 
         spin.stop()
+
+        lnfd()
+        info('now' + ` cd ${outputDir} && <npm|yarn> install`.green)
+
+        if (template.instructions) instructions(template.instructions)
+
+        lnfd()
+        info('thanks enjoy your dev have a good day')
     })
     .catch(err => {
         if (spin !== undefined) spin.stop()
@@ -128,14 +148,18 @@ function askAddons () {
     ])
 }
 
+function instructions (steps) {
+    steps.forEach(step => { info('  + ' + step.white) })
+}
+
 function clean (dir) {
     rm('-rf', dir)
 }
 
-function renderTemplate () {
+//function renderTemplate () {
 
-}
+//}
 
-function outputTemplate () {
+//function outputTemplate () {
 
-}
+//}

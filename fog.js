@@ -11,7 +11,7 @@ const fog = require('commander')
 const info = console.info.bind(console, '~~~ fog >'.grey)
 
 fog.version(version)
-    .command('init <template> [dir]', 'download boilerplate of given <template> into optional [dir], otherwise deploys into current working dir. regardless, dir must be empty.')
-    .command('list', 'List known templates')
+    .command('init <template> [dir]', 'download and config template in [dir] or cwd')
+    .command('list', 'list known templates')
 
 fog.parse(process.argv)
