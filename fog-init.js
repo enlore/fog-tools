@@ -1,7 +1,13 @@
 /* jshint node: true, asi: true, laxcomma: true, esversion: 6 */
 
-require('shelljs/global')
+const sh = require('shelljs')
+sh.config.silent = true
+
 require('colors')
+
+const skull = "\\U1f480"
+const okHand = "\\U1f44c"
+
 
 const info = require("./util.js").info
 const warn = require("./util.js").warn
@@ -17,30 +23,41 @@ const templates = require('./templates.json')
 const fog = require('commander')
 fog.parse(process.argv)
 
+lnfd()
+info('hey how\'s it going. let me set up ' + `${fog.args[0]}`.blue + ' for you')
+lnfd()
+
 let tmpDir = path.resolve('/tmp/.fog-cli-workspace')
 
 let outputDir = fog.args[1]
 let outputPath = path.resolve(outputDir || '.')
 
-let outputPathContents = ls('-lA', outputPath)
+let mkdirExit = sh.mkdir(outputPath)
 
-lnfd()
-info('hey hows it going')
-lnfd()
+if (mkdirExit.stderr
+ && mkdirExit.stderr.search(/path already exists/) !== -1) {
+    info('output dir already exists')
+} else if (mkdirExit.code !== 0) {
+    warn(`ran into trouble creating the output dir. blarg.`)
+} else {
+    info(`created output dir ` + outputDir.blue)
+}
+
+let outputPathContents = sh.ls('-lA', outputPath)
 
 if (outputPath === path.resolve(__dirname)) {
     info('using current working directory')
 
     if (outputPathContents.length > 0) {
-        warn('current working directory not empty. blarg.')
-        exit(1)
+        warn(`current working directory not empty. blarg.`)
+        sh.exit(1)
     }
 } else {
-    info(`attempting to output project into ${outputPath}`)
+    info(`attempting to output project into ` + `${outputPath}`.blue)
 
     if (outputPathContents.length > 0) {
-        warn('output dir not empty. blarg.')
-        exit(1)
+        warn(`output dir not empty. blarg.`)
+        sh.exit(1)
     }
 }
 
@@ -68,7 +85,7 @@ fetch(template.repo)
         spin.text = 'zug zug'
         spin.start()
 
-        mv(`${tmpDir}/*/*`, outputPath)
+        sh.mv(`${tmpDir}/*/*`, outputPath)
 
         spin.stop()
         lnfd()
@@ -108,14 +125,14 @@ fetch(template.repo)
         console.error(err)
         warn('and so i die')
 
-        exit(1)
+        sh.exit(1)
     })
 
 function pick (name) {
     let t = templates[name]
     if (!t) {
         info(`No template by that name: ${name}`)
-        exit(1)
+        sh.exit(1)
     } else
         return t
 }
@@ -124,7 +141,7 @@ function fetch (repo) {
     let url = `${repo}/archive/master.zip`
 
     clean(tmpDir)
-    mkdir('-p', tmpDir)
+    sh.mkdir('-p', tmpDir)
 
     return download(url, tmpDir, { extract: true })
 }
@@ -153,7 +170,7 @@ function instructions (steps) {
 }
 
 function clean (dir) {
-    rm('-rf', dir)
+    sh.rm('-rf', dir)
 }
 
 //function renderTemplate () {
