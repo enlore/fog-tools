@@ -27,6 +27,14 @@
         "description": "Single page app powered by Vue, built by Rollup"
     },
 
+    "vue-rollup-component": {
+        "repo": "https://github.com/enlore/fog-tools-vue-rollup-component",
+        "description": "Vue standalone component template",
+        "instructions": [
+            "NOTE: you may need to run `npm rebuild node-sass`"
+        ]
+    },
+
     "electron-vue-app": {
         "repo": "https://github.com/enlore/fog-tools-electron-vue-rollup",
         "description": "Desktop app powered by Electron, built with Vue by Rollup"
