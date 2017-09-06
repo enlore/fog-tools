@@ -1,6 +1,6 @@
 {
   "name": "fog-tools",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "bin": {
     "fog": "fog.js",
     "fog-list": "fog-list.js",
