@@ -166,7 +166,7 @@ function askAddons () {
 }
 
 function instructions (steps) {
-    steps.forEach(step => { info('  + ' + step.white) })
+    steps.forEach(step => { info('  + ' + step.cyan) })
 }
 
 function clean (dir) {
