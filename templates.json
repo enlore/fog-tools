@@ -22,8 +22,8 @@
         ]
     },
 
-    "rollup-vue-app": {
-        "repo": "https://github.com/enlore/fog-vue-rollup",
+    "vue-rollup-app": {
+        "repo": "https://github.com/enlore/fog-tools-vue-rollup-app",
         "description": "Single page app powered by Vue, built by Rollup"
     },
 
