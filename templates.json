@@ -1,8 +1,7 @@
 {
     "static-firebase": {
         "repo": "https://github.com/enlore/fog-static",
-        "description": "Static website hosted on Firebase, built with Pug and Sass",
-        "instructions": [
+        "description": "Static website hosted on Firebase, built with Pug and Sass", "instructions": [
             "set up Google Firebase project with hosting",
             "install firebase command line tool",
             "<npm|yarn> run dev",
@@ -38,5 +37,10 @@
     "electron-vue-app": {
         "repo": "https://github.com/enlore/fog-tools-electron-vue-rollup",
         "description": "Desktop app powered by Electron, built with Vue by Rollup"
+    },
+
+    "orbit-cognition": {
+        "repo": "https://githubdev.medcity.net/EIMS-Web/fog-tools-orbit-cognition",
+        "description": "[FIREWALLED - you have to know how to get it, and if you don't know then you can't :| ]"
     }
 }
