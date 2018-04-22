@@ -39,8 +39,8 @@
         "description": "Desktop app powered by Electron, built with Vue by Rollup"
     },
 
-    "orbit-cognition": {
-        "repo": "https://githubdev.medcity.net/EIMS-Web/fog-tools-orbit-cognition",
-        "description": "[FIREWALLED - you have to know how to get it, and if you don't know then you can't :| ]"
+    "fog-tools-preact-cli-app": {
+      "repo": "https://github.com/enlore/fog-tools-preact-cli-app",
+      "description": "Enhanced preact cli based boilerplate with router, reactive store, network io stub, scss, type system via flow"
     }
 }
