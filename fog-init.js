@@ -1,5 +1,6 @@
 /* jshint node: true, asi: true, laxcomma: true, esversion: 6 */
 
+const https = require("https")
 const sh = require('shelljs')
 sh.config.silent = true
 
@@ -18,117 +19,144 @@ const download = require('download')
 const inq = require('inquirer')
 const ora = require('ora')
 
-const templates = require('./templates.json')
-
 const fog = require('commander')
 fog.parse(process.argv)
 
-lnfd()
-info('hey how\'s it going. let me set up ' + `${fog.args[0]}`.blue + ' for you')
-lnfd()
+// const templates = require('./templates.json')
+info('ok, fetching templates')
+let spin = ora('fetching...')
+spin.start()
 
-let tmpDir = path.resolve('/tmp/.fog-cli-workspace')
+https.request('https://cdn.rawgit.com/enlore/fog-tools-temlpates/75dc84cf/templates.json', res => {
+  spin.stop()
+  info('Here are the project templates that I know about:')
 
-let outputDir = fog.args[1]
-let outputPath = path.resolve(outputDir || '.')
+  let data = ''
 
-let mkdirExit = sh.mkdir(outputPath)
+  res.on('data', chunk => {
+    data += chunk
+  })
 
-if (mkdirExit.stderr
- && mkdirExit.stderr.search(/path already exists/) !== -1) {
+  res.on('error', err => console.error(err))
+
+  res.on('end', () => {
+    let templates = JSON.parse(data)
+    doInit(templates)
+  })
+})
+  .on('error', err => console.error(err))
+  .end()
+
+
+
+function doInit (templates) {
+  lnfd()
+  info('hey how\'s it going. let me set up ' + `${fog.args[0]}`.blue + ' for you')
+  lnfd()
+
+  let tmpDir = path.resolve('/tmp/.fog-cli-workspace')
+
+  let outputDir = fog.args[1]
+  let outputPath = path.resolve(outputDir || '.')
+
+  let mkdirExit = sh.mkdir(outputPath)
+
+  if (mkdirExit.stderr
+    && mkdirExit.stderr.search(/path already exists/) !== -1) {
     info('output dir already exists')
-} else if (mkdirExit.code !== 0) {
+  } else if (mkdirExit.code !== 0) {
     warn(`ran into trouble creating the output dir. blarg.`)
-} else {
+  } else {
     info(`created output dir ` + outputDir.blue)
-}
+  }
 
-let outputPathContents = sh.ls('-lA', outputPath)
+  let outputPathContents = sh.ls('-lA', outputPath)
 
-if (outputPath === path.resolve(__dirname)) {
+  if (outputPath === path.resolve(__dirname)) {
     info('using current working directory')
 
     if (outputPathContents.length > 0) {
-        warn(`current working directory not empty. blarg.`)
-        sh.exit(1)
+      warn(`current working directory not empty. blarg.`)
+      sh.exit(1)
     }
-} else {
+  } else {
     info(`attempting to output project into ` + `${outputPath}`.blue)
 
     if (outputPathContents.length > 0) {
-        warn(`output dir not empty. blarg.`)
-        sh.exit(1)
+      warn(`output dir not empty. blarg.`)
+      sh.exit(1)
     }
-}
+  }
 
-lnfd()
-info('tmpDir:', tmpDir)
-info('outputPath: ', outputPath)
-info('options:', fog.opts())
-lnfd()
+  lnfd()
+  info('tmpDir:', tmpDir)
+  info('outputPath: ', outputPath)
+  info('options:', fog.opts())
+  lnfd()
 
-// pick from list
-let template = pick(fog.args[0])
+  // pick from list
+  let template = pick(templates, fog.args[0])
 
-let spin
+  let spin
 
-spin = ora('fetching template')
-spin.start()
+  spin = ora('fetching template')
+  spin.start()
 
-fetch(template.repo)
+  fetch(tmpDir, template.repo)
     .then(() => {
-        spin.stop()
+      spin.stop()
 
-        info('fetched down ' + `${fog.args[0]}`.blue)
-        info(`moving files into ${outputPath}`)
+      info('fetched down ' + `${fog.args[0]}`.blue)
+      info(`moving files into ${outputPath}`)
 
-        spin.text = 'zug zug'
-        spin.start()
+      spin.text = 'zug zug'
+      spin.start()
 
-        sh.mv(`${tmpDir}/*/*`, outputPath)
+      sh.mv(`${tmpDir}/*/*`, outputPath)
 
-        spin.stop()
-        lnfd()
+      spin.stop()
+      lnfd()
 
-        return true
+      return true
     })
 
     .then(askAddons)
     .then(addons => {
-        lnfd()
-        info('selected these addons', addons)
-        return
+      lnfd()
+      info('selected these addons', addons)
+      return
     })
 
     .then(() => {
-        info('cleaning downloaded garbage')
+      info('cleaning downloaded garbage')
 
-        spin.text = 'zug zug'
-        spin.start()
+      spin.text = 'zug zug'
+      spin.start()
 
-        clean(tmpDir)
+      clean(tmpDir)
 
-        spin.stop()
+      spin.stop()
 
-        lnfd()
-        info('now' + ` cd ${outputDir} && <npm|yarn> install`.green)
+      lnfd()
+      info('now' + ` cd ${outputDir} && <npm|yarn> install`.green)
 
-        if (template.instructions) instructions(template.instructions)
+      if (template.instructions) instructions(template.instructions)
 
-        lnfd()
-        info('thanks enjoy your dev have a good day')
+      lnfd()
+      info('thanks enjoy your dev have a good day')
     })
     .catch(err => {
-        if (spin !== undefined) spin.stop()
+      if (spin !== undefined) spin.stop()
 
-        warn('something has gone terribly wrong')
-        console.error(err)
-        warn('and so i die')
+      warn('something has gone terribly wrong')
+      console.error(err)
+      warn('and so i die')
 
-        sh.exit(1)
+      sh.exit(1)
     })
+}
 
-function pick (name) {
+function pick (templates, name) {
     let t = templates[name]
     if (!t) {
         info(`No template by that name: ${name}`)
@@ -137,7 +165,7 @@ function pick (name) {
         return t
 }
 
-function fetch (repo) {
+function fetch (tmpDir, repo) {
     let url = `${repo}/archive/master.zip`
 
     clean(tmpDir)
